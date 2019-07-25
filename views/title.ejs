@@ -12,16 +12,22 @@
     <h1> Add title here</h1>
     <hr>
 
-    <button>Add more</button>
+    <button id='add'>Add more</button>
     <br>
     <br>
-    <form action="/title" method="post">
+    <form action="/title" method="post" id="form">
 
         Add Title: <input type="text" name="title" placeholder="Add Title here">
         <br>
         <input type="submit" value="submit">
     </form>
     <hr>
+    <script>
+        btn = document.getElementById('add');
+        btn.addEventListener("click", () => {
+            document.getElementById("form").innerHTML = 'Add Titl';
+        });
+    </script>
 </body>
 
 </html>
