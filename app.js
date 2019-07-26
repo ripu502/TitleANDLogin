@@ -14,6 +14,13 @@ const app = express();
 // setting the port
 const port = process.env.PORT || 3000;
 
+// serving static files
+app.use(express.static('public'))
+
+// bodyparser
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 // setting the templating Engine
 app.set('view engine', 'ejs');
 app.set('views', 'views');

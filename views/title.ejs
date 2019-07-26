@@ -16,18 +16,15 @@
     <br>
     <br>
     <form action="/title" method="post" id="form">
-
-        Add Title: <input type="text" name="title" placeholder="Add Title here">
-        <br>
+        <div id="container">
+            Add Title: <input type="text" name="title" placeholder="Add Title here">
+            <br>
+            <br>
+        </div>
         <input type="submit" value="submit">
     </form>
     <hr>
-    <script>
-        btn = document.getElementById('add');
-        btn.addEventListener("click", () => {
-            document.getElementById("form").innerHTML = 'Add Titl';
-        });
-    </script>
+    <script src="/js/title.js"></script>
 </body>
 
 </html>
