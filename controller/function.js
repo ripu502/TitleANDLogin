@@ -4,19 +4,17 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const Sequelize = require('sequelize');
 
-
+// page not found
 module.exports.error = (req, res, next) => {
     res.render('error');
 }
 
-
-module.exports.logout = (req, res, next) => {
-    // res.render('error');
-    req.logout();
-    // req.flash('success_msg', 'You are logged out');
-    res.redirect('/login');
+// sending the login page
+module.exports.login = (req, res, next) => {
+    res.render('login');
 }
 
+// authenticating and login the user
 module.exports.postLogin = (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/title',
@@ -25,20 +23,12 @@ module.exports.postLogin = (req, res, next) => {
     })(req, res, next);
 }
 
-
-module.exports.title = (req, res, next) => {
-    res.render('title');
-}
-
-
-module.exports.login = (req, res, next) => {
-    res.render('login');
-}
-
+// sending the registration page
 module.exports.register = (req, res, next) => {
     res.render('register');
 }
 
+// posting the registration data to the postgres dataBase
 module.exports.postRegister = (req, res, next) => {
     console.log(req.body);
     const { email, password, cpassword } = req.body;
@@ -62,11 +52,14 @@ module.exports.postRegister = (req, res, next) => {
 
 }
 
-module.exports.postTitle = (req, res, next) => {
+// sending the form for adding the title or tags
+module.exports.title = (req, res, next) => {
+    res.render('title');
+}
 
-    // res.send(req.body);
+// posting the titles or tags to the mongocloud
+module.exports.postTitle = (req, res, next) => {
     const tags = req.body.title;
-    // console.log(req.body.title);
     const tag = new Tag({
         tags: tags,
     });
@@ -78,4 +71,10 @@ module.exports.postTitle = (req, res, next) => {
         .catch((err) => {
             console.log(err);
         });
+}
+
+// logging out the user
+module.exports.logout = (req, res, next) => {
+    req.logout();
+    res.redirect('/login');
 }

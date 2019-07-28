@@ -1,5 +1,7 @@
 module.exports = {
     MongoUser : '',
     MongoPassword :'',
-    MongoDataBase : ''
+    MongoDataBase : '',
+    // password of the postgress server
+    password: ''
 }

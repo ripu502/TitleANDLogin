@@ -10,5 +10,4 @@ module.exports = new Sequelize('learn502', 'postgres', keys.password, {
         min: 0,
         idle: 10000
     },
-    // storage: 'path/to/database.sqlite'
 });
