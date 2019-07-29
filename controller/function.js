@@ -17,10 +17,22 @@ module.exports.login = (req, res, next) => {
 // authenticating and login the user
 module.exports.postLogin = (req, res, next) => {
     passport.authenticate('local', {
-        successRedirect: '/title',
+        successRedirect: '/',
         failureRedirect: '/login',
         failureFlash: true
     })(req, res, next);
+}
+
+// getting tags of loged user
+module.exports.dashboard = (req, res, next) => {
+    const user = req.user;
+    Tag.findOne({ userid: user.id }).then(u => {
+        res.render('dashboard',
+            {
+                username: user.email,
+                tags : u.tags
+            });
+    })
 }
 
 // sending the registration page
@@ -54,7 +66,7 @@ module.exports.postRegister = (req, res, next) => {
 
 // sending the form for adding the title or tags
 module.exports.title = (req, res, next) => {
-    res.render('title', {user : req.user});
+    res.render('title', { user: req.user });
 }
 
 // posting the titles or tags to the mongocloud
@@ -62,7 +74,7 @@ module.exports.postTitle = (req, res, next) => {
     const tags = req.body.title;
     const id = req.body.id;
     const tag = new Tag({
-        userid : id,
+        userid: id,
         tags: tags,
     });
     tag.save()

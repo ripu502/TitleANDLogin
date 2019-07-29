@@ -5,6 +5,9 @@ const { forwardAuthenticated } = require('../config/auth');
 // ensure authenticated check
 const { ensureAuthenticated } = require('../config/auth');
 
+// getting titles of loged user
+router.get('/', ensureAuthenticated, controller.dashboard)
+
 // getting the login page if logout
 router.get('/login', forwardAuthenticated, controller.login);
 
