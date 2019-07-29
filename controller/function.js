@@ -54,13 +54,15 @@ module.exports.postRegister = (req, res, next) => {
 
 // sending the form for adding the title or tags
 module.exports.title = (req, res, next) => {
-    res.render('title');
+    res.render('title', {user : req.user});
 }
 
 // posting the titles or tags to the mongocloud
 module.exports.postTitle = (req, res, next) => {
     const tags = req.body.title;
+    const id = req.body.id;
     const tag = new Tag({
+        userid : id,
         tags: tags,
     });
     tag.save()

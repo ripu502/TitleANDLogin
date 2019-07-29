@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1> Add title here</h1>
+    <h1> Add title here <%= user.email%></h1>
     <hr>
     <button id='add'>Add more</button>
     <br>
@@ -19,6 +19,7 @@
             Add Title: <input type="text" name="title" placeholder="Add Title here">
             <br>
             <br>
+            <input type="hidden" name="id" value="<%= user.id%>">
         </div>
         <input type="submit" value="submit">
     </form>
