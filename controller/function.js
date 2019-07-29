@@ -27,11 +27,15 @@ module.exports.postLogin = (req, res, next) => {
 module.exports.dashboard = (req, res, next) => {
     const user = req.user;
     Tag.findOne({ userid: user.id }).then(u => {
-        res.render('dashboard',
-            {
-                username: user.email,
-                tags : u.tags
-            });
+        if (u) {
+
+            res.render('dashboard',
+                {
+                    username: user.email,
+                    tags: u.tags
+                });
+        }
+        res.redirect('/title');
     })
 }
 
@@ -51,6 +55,7 @@ module.exports.postRegister = (req, res, next) => {
                 password: hashPassword
             }).then((user) => {
                 console.log(`user registered`)
+                res.redirect('/login');
                 return user;
             }).catch((err) => {
                 return console.log(`some err in post register ${err}`)
@@ -73,18 +78,41 @@ module.exports.title = (req, res, next) => {
 module.exports.postTitle = (req, res, next) => {
     const tags = req.body.title;
     const id = req.body.id;
-    const tag = new Tag({
-        userid: id,
-        tags: tags,
-    });
-    tag.save()
-        .then(post => {
-            console.log('Tag added');
-            res.redirect('/title');
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    Tag.findOne({ userid: id }).then(u => {
+        if (!u) {
+            const tag = new Tag({
+                userid: id,
+                tags: tags,
+            });
+            tag.save()
+                .then(post => {
+                    console.log('Tag added');
+                    res.redirect('/title');
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+        else {
+            let t = u.tags.concat(tags);
+            // const updated = new Tag({
+            //     userid: id,
+            //     tags: t
+            // })
+            u.tags = t;
+            u.save()
+                .then(post => {
+                    console.log('Tag added');
+                    res.redirect('/title');
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }).catch(err => {
+        console.log(`some err occured in finding the user in mongo after login ${err}`);
+    })
+
 }
 
 // logging out the user
