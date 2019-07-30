@@ -11,6 +11,12 @@
 <body>
     <h1>Registration</h1>
     <hr>
+
+    <% if (msg.length > 0) { %>
+    <% for (let m of msg) {%>
+    <h2><%= m%></h2>
+    <%}%>
+        <% }%>
     <form action="/register" method="post">
         Username: <input type="text" name="email" id="" placeholder="Username"><br><br>
         Password: <input type="password" name="password" value="" placeholder="password *&+"><br><br>

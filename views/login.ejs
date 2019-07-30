@@ -11,6 +11,14 @@
 <body>
     <h1>Login</h1>
     <hr>
+
+    <% if (msg.length > 0) { %>
+    <% for (let m of msg) {%>
+    <h2><%= m%></h2>
+    <%}%>
+    <% }%>
+
+
     <form action="/login" method="post">
         Username: <input type="text" name="email" placeholder="Username..."> <br> <br>
         Password: <input type="password" name="password" placeholder="Password..." id=""> <br><br>

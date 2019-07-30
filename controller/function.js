@@ -3,6 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const Sequelize = require('sequelize');
+const { validationResult } = require('express-validator/check');
 
 // page not found
 module.exports.error = (req, res, next) => {
@@ -11,7 +12,10 @@ module.exports.error = (req, res, next) => {
 
 // sending the login page
 module.exports.login = (req, res, next) => {
-    res.render('login');
+    res.render('login',
+        {
+            msg: req.flash('error')
+        });
 }
 
 // authenticating and login the user
@@ -34,19 +38,32 @@ module.exports.dashboard = (req, res, next) => {
                     username: user.email,
                     tags: u.tags
                 });
+        } else {
+            res.redirect('/title');
         }
-        res.redirect('/title');
     })
 }
 
 // sending the registration page
 module.exports.register = (req, res, next) => {
-    res.render('register');
+    res.render('register',
+        {
+            msg: req.flash('error')
+        });
 }
 
 // posting the registration data to the postgres dataBase
 module.exports.postRegister = (req, res, next) => {
     console.log(req.body);
+    const error = validationResult(req);
+    console.log(error);
+    if (!error.isEmpty()) {
+        req.flash('error', 'some error happen');
+        return res.status(422).render('register',
+            {
+                msg: req.flash('error')
+            });
+    }
     const { email, password, cpassword } = req.body;
     bcrypt.hash(password, 12)
         .then((hashPassword) => {

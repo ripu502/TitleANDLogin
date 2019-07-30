@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const controller = require('../controller/function.js');
+const User = require('../models/User');
+const { check } = require('express-validator');
 // if authenticated check
 const { forwardAuthenticated } = require('../config/auth');
 // ensure authenticated check
@@ -18,7 +20,27 @@ router.post('/login', controller.postLogin);
 router.get('/register', forwardAuthenticated, controller.register);
 
 // posting the registration details for the register of the user
-router.post('/register', controller.postRegister);
+router.post('/register',
+    [check('email').isLength({ min: 1 }).withMessage('empty')
+        .custom((value) => {
+            return User.findOne({
+                where: {
+                    email: value
+                }
+            })
+                .then((user) => {
+                    if (user)
+                        return Promise.reject('User already exist');
+                })
+        }),
+
+    check('password').isLength({ min: 1 }).withMessage('empty'),
+    check('cpassword').custom((value, { req }) => {
+        if (value !== req.body.password)
+            throw new Error('Password confirmation does not match password');
+        else
+            return true;
+    })], controller.postRegister);
 
 // get request to logout the user
 router.get('/logout', ensureAuthenticated, controller.logout)
