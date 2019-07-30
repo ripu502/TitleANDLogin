@@ -3,7 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const Sequelize = require('sequelize');
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 
 // page not found
 module.exports.error = (req, res, next) => {
@@ -88,18 +88,34 @@ module.exports.postRegister = (req, res, next) => {
 
 // sending the form for adding the title or tags
 module.exports.title = (req, res, next) => {
-    res.render('title', { user: req.user });
+    res.render('title', {
+        user: req.user,
+        msg: req.flash('error')
+    });
 }
 
 // posting the titles or tags to the mongocloud
 module.exports.postTitle = (req, res, next) => {
     const tags = req.body.title;
+    const error = validationResult(req);
+    console.log(error);
+    if (!error.isEmpty()) {
+        req.flash('error', 'some error happen');
+        return res.status(422).render('title',
+            {
+                user: req.user,
+                msg: req.flash('error')
+            });
+    }
+    let newArray = tags.filter(function (element) {
+        if (element != '') return element;
+    });
     const id = req.body.id;
     Tag.findOne({ userid: id }).then(u => {
         if (!u) {
             const tag = new Tag({
                 userid: id,
-                tags: tags,
+                tags: newArray,
             });
             tag.save()
                 .then(post => {
@@ -111,11 +127,7 @@ module.exports.postTitle = (req, res, next) => {
                 });
         }
         else {
-            let t = u.tags.concat(tags);
-            // const updated = new Tag({
-            //     userid: id,
-            //     tags: t
-            // })
+            let t = u.tags.concat(newArray);
             u.tags = t;
             u.save()
                 .then(post => {

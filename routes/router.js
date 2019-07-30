@@ -49,7 +49,10 @@ router.get('/logout', ensureAuthenticated, controller.logout)
 router.get('/title', ensureAuthenticated, controller.title)
 
 // posting titles in the mongoCloud if the user is logIn
-router.post('/title', controller.postTitle)
+router.post('/title',
+    [
+        check('title').isLength({ min: 1 }).withMessage('empty hai')
+    ], controller.postTitle)
 
 // page not found error route
 router.use('/', controller.error);
